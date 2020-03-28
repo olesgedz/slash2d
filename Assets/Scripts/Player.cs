@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] Rigidbody2D player;
     private bool isGrounded;
     private bool isAllowedToDoubleJump;
+    private int attackCount;
     [SerializeField] Transform groundCheckPoint;
     [SerializeField] LayerMask whatIsGround;
     [SerializeField] PointerListener[] buttons;
@@ -20,10 +21,14 @@ public class Player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
+        attackCount = 0;
     }
 
     // Update is called once per frame
+    public void Attack()
+    {
 
+    } 
     public void Print()
     {
         Debug.Log("Hello!\n");
@@ -39,7 +44,7 @@ public class Player : MonoBehaviour
             direction = -1;
         if (buttons[(int)Buttons.Right].IsPressed)
             direction = 1;
-        if ( buttons[(int)Buttons.Left].IsPressed && buttons[(int)Buttons.Right].IsPressed)
+        if (buttons[(int)Buttons.Left].IsPressed && buttons[(int)Buttons.Right].IsPressed)
             direction = 0;
         player.velocity = new Vector2(moveSpeed * direction, player.velocity.y);
         if (buttons[(int)Buttons.Jump].IsPressed)
@@ -52,11 +57,20 @@ public class Player : MonoBehaviour
                 isAllowedToDoubleJump = false;
             }
         }
+        if (buttons[(int)Buttons.Attack].IsPressed)
+        {
+            attackCount++;
+        }
+        else
+            attackCount = 0;
+
+
         if (player.velocity.x < 0)
             render.flipX = true;
         else if (player.velocity.x > 0)
             render.flipX = false;
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetInteger("attack", attackCount);
         anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
     }
 }
