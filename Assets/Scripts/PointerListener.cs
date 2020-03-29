@@ -18,7 +18,6 @@ public class PointerListener : MonoBehaviour, IPointerDownHandler, IPointerUpHan
      {
         IsPressed = true;
      }
-
      public void OnPointerUp(PointerEventData eventData)
      {
         IsPressed = false;

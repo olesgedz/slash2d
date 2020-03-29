@@ -15,8 +15,16 @@ public class Player : MonoBehaviour
     [SerializeField] PointerListener[] buttons;
     private enum Buttons{Left, Right, Attack, HAttack, Block, Jump};
     private Animator anim;
+    private int jumpCount = 0;
     private SpriteRenderer render;
     // Start is called before the first frame update
+
+    private float waitTime = 0.2f;
+    [SerializeField] float attackWait = 1.26f;
+    private float attackTime = 0.0f;
+    private bool jumpButtonPressed = false;
+    private bool highAttack = false;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -37,7 +45,9 @@ public class Player : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, .2f, whatIsGround);
         if (isGrounded)
+        {
             isAllowedToDoubleJump = true;
+        }
         
         int direction = 0;
         if (buttons[(int)Buttons.Left].IsPressed)
@@ -47,23 +57,41 @@ public class Player : MonoBehaviour
         if (buttons[(int)Buttons.Left].IsPressed && buttons[(int)Buttons.Right].IsPressed)
             direction = 0;
         player.velocity = new Vector2(moveSpeed * direction, player.velocity.y);
+       
+        if (!buttons[(int)Buttons.Jump].IsPressed)
+            jumpButtonPressed = false;
+       
         if (buttons[(int)Buttons.Jump].IsPressed)
         {   
             if (isGrounded)
-                player.velocity = new Vector2(player.velocity.x, jumpForce);
-            else if (isAllowedToDoubleJump)
             {
                 player.velocity = new Vector2(player.velocity.x, jumpForce);
-                isAllowedToDoubleJump = false;
+                jumpCount = 1;
             }
+            else if (isAllowedToDoubleJump && !jumpButtonPressed)
+            {
+                Debug.Log("Sec");
+                player.velocity = new Vector2(player.velocity.x, player.velocity.y + jumpForce / 2);
+                isAllowedToDoubleJump = false;
+                jumpCount = 0;
+            }
+            jumpButtonPressed = true;
         }
         if (buttons[(int)Buttons.Attack].IsPressed)
         {
-            attackCount++;
+            attackTime = Time.time;
+            attackCount = 1;
         }
-        else
+        if (!isGrounded && attackCount > 0)
+        {
+            highAttack = true;
+        }
+       
+        if (Time.time - attackTime >= attackWait || (highAttack && isGrounded))
+        {           
             attackCount = 0;
-
+            highAttack = false;
+        }
 
         if (player.velocity.x < 0)
             render.flipX = true;

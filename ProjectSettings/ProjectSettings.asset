@@ -636,10 +636,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 33493e69-bcae-4316-8e8b-bd4bc16fb890
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: Slash2d
+  organizationId: oles-3430101
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
